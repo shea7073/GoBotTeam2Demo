@@ -1,19 +1,19 @@
 package main
 
 import (
-	"fmt"
-	"gobot.io/x/gobot"
-	"gobot.io/x/gobot/drivers/aio"
-	g "gobot.io/x/gobot/platforms/dexter/gopigo3"
-	"gobot.io/x/gobot/platforms/raspi"
-	"time"
+"fmt"
+"gobot.io/x/gobot"
+"gobot.io/x/gobot/drivers/aio"
+g "gobot.io/x/gobot/platforms/dexter/gopigo3"
+"gobot.io/x/gobot/platforms/raspi"
+"time"
 )
 
 //robotRunLoop is the main function for the robot, the gobot framework
 //will spawn a new thread in the NewRobot factory functin and run this
 //function in that new thread. Do all of your work in this function and
 //in other functions that this function calls. don't read from sensors or
-//use actuators from main or you will get a panic.
+//use actuators frmo main or you will get a panic.
 //add
 func robotRunLoop(lightSensor *aio.GroveLightSensorDriver, soundSensor *aio.GroveSoundSensorDriver, gpg *g.Driver) {
 	ledOn := true
@@ -29,6 +29,7 @@ func robotRunLoop(lightSensor *aio.GroveLightSensorDriver, soundSensor *aio.Grov
 		fmt.Println("Light Value is ", sensorVal)
 		fmt.Println("Sound Value is ", soundSensorVal)
 		time.Sleep(time.Second)
+
 		if sensorVal < 1000 {
 			if ledOn {
 				gpg.SetLED(1, 0, 0, 0)
@@ -37,10 +38,12 @@ func robotRunLoop(lightSensor *aio.GroveLightSensorDriver, soundSensor *aio.Grov
 				gpg.SetLED(1, 200, 200, 200)
 				ledOn = !ledOn
 			}
-		}
+		} else if sensorVal > 2500 {
+			gpg.SetMotorDps(g.MOTOR_LEFT, 20)
+			gpg.Start()
+		} else {
 
-		//gpg.SetMotorDps(g  20)
-		//gpg.Start()
+		}
 	}
 }
 
